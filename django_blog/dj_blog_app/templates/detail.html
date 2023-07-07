@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %} Blog detailed {% endblock %}
+
+ <body>
+     <header>
+       <h1> <a href="">My Personal Blog</a> </h1>
+     </header>
+     <div>
+     {% block content %}
+         <div class="row media content-section mobiledevice">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="d-flex">
+            <div>
+                <h2 class="title-style">{{ post.title }}</h2>
+                <h6 class="text-muted">{{ post.release_date|date:"F d, Y" }}</h6>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-12 col-sm-12" id="content">
+        <div class="article-style">
+            {{ post.content|safe }}
+        </div>
+
+        <div>
+            <small class='text-muted'> Published by</small>
+            <a class='mr-2' href="{% url 'profile' object.author %}"> {{ post.author }}</a>
+        </div>
+        {% if post.author == user %}
+             <div class="ml-auto">
+                <a class="btn btncolor btn-sm mt-1 mb-1" href="{% url 'upd-post' post.slug %}">Update</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'del-post' post.slug  %}">Delete</a>
+             </div>
+        {% endif %}
+
+    </div>
+     {% endblock content %}
+
+     </div>
+ </body>

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} My personal blog {% endblock %}
+
+<body>
+     <header>
+       <h2> <a href="">My Personal Blog</a> </h2>
+     </header>
+
+{% block content %}
+    <div class="row display-flex justify-content-start">
+    {% for i in object_list %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mobiledevice">
+            <article class="media content-section customhover" style="height: 95%;">
+                <div class="media-body">
+                    <a href="/{{i.slug}}">
+                        <div class="aspect-ratio-box">
+                            <img class="img-fluid" src="{{ i.image.url }}">
+                        </div>
+                    </a>
+                    <div>
+                        <a class="article-title line-clamp-2 title-style" style="font-size: 22px" href="{{i.slug}}">
+                            {{ i.title }}
+                        </a>
+                            <p class="article-content line-clamp-5 subtitle-style">{{ i.content|linebreaks|truncatewords:50 }}</p>
+                        </a>
+                    </div>
+                    {% if i.author == user %}
+                        <div style="float: right">
+                            <a class="btn btncolor btn-sm mt-1 mb-1" href="#">Update</a>
+                            <a class="btn btn-danger btn-sm mt-1 mb-1" href="#">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </article>
+
+        </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
+
+ </body>

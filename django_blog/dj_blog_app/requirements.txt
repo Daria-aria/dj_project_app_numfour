@@ -1,0 +1,9 @@
+
+Libraries:
+
+    captcha
+    pillow
+    fontawsomefree
+    crispy_forms
+    six
+

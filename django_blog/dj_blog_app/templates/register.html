@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Registration {% endblock %}
+
+
+{% block content %}
+
+<h2>{{title}}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Join the Blog App</legend>
+
+    {% for f in form %}
+    <p><label class="form-label" for='{{ f.id_for_label }}'>{{f.label}}: </label>{{f }}</p>
+    <div class="form-error">{{f.errors}}</div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-success">Register</button>
+    <br><br>
+    <input type="checkbox" name="is_human"> Please confirm you agree with  <a href="{% url 'terms-policy' %}">terms and privacy policy</a>
+    <br><br>
+    </fieldset>
+</form>
+
+ <div class="border-top pt-3">
+            <small class="text-muted">
+                Already Have An Account? <a class="ml-2" href="/login">Sign in here</a>
+            </small>
+        </div>
+{% endblock %}
