@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+    <div class="row my-3 p-3">
+        <img class="rounded-circle account-img" src="{{ user.profile.userpic.url }}" style="width:100%;max-width:250px"/>
+    </div>
+    {% if user_form.errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div id="form_errors">
+                {% for key, value in user_form.errors.items %}
+                    <strong>{{ value }}</strong>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="form-content">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-10 col-sm-6 col-md-8">
+                    <div class="form-group">
+                        <h5 class="account-heading">{{ user.username }}</h5>
+                        <label class="small mb-1">Email:</label>
+                            {{ user_form.email }}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="small mb-1">Name:</label>
+                        {{ profile_form.username }}
+                        <hr>
+                        <label class="small mb-1">Change Avatar:</label>
+                        {{ profile_form.userpic }}
+                    </div>
+
+                    <label class="small mb-1">Bio:</label> {{ profile_form.bio }}
+                    <hr>
+                    <label class="small mb-1">Birth date:</label> {{ profile_form.date_of_birth }}
+                    <hr>
+                    <label class="small mb-1">Status:</label> {{ profile_form.statusType }}
+                    <hr>
+                    <label class="small mb-1">Friends:</label>
+                    <hr>
+                    <label class="small mb-1">Followers:</label>
+
+                <br><br>
+            <button type="submit" class='btn btn-outline-info'>Update</button>
+                       </div>
+
+                <div class="col-6 col-md-4">
+                    <div class="card card-signin my-5">
+                        <div class="card-body">
+                        <h5 class="card-title text-center">My activity on app:</h5>
+                        <h6 class="text-center heading">
+                        {{ request.user.profile.friends.count }}
+                        <span class="description"
+                      ><a href="{% url 'friend_list' %}">Friends</a></span
+                    ></h6>
+                           <h6 class="text-center heading">{{ post_count }}
+                               <span class="description"
+                      ><a href="{% url 'user_posts' request.user.username %}"
+                        >Posts</a></span>
+                           </h6>
+                    </div>
+                </div>
+
+
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Friend Requests Sent ({{ sent_friend_requests.count }})</h5>
+            <hr class="my-2" />
+            {% if not sent_friend_requests %}
+            <h6 class="text-center heading"><i>No sent requests!</i></h6>
+            {% else %} {% for s_request in sent_friend_requests %}
+            <a href="#"
+              ><img
+                src="{{ s_request.to_user.profile.userpic.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a href="{% url 'profile2' s_request.to_user.profile.slug %}"
+              ><b>{{ s_request.to_user.username }}</b></a
+            >
+            <small class="float-right">
+              <a
+                class="btn btn-warning mr-2"
+                href="{% url 'cancel_friend_request' s_request.to_user.id %}"
+                >Cancel</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Friend Requests Recieved ({{ rec_friend_requests.count }})</h5>
+            <hr class="my-2" />
+            {% if not rec_friend_requests %}
+            <h6 class="text-center heading"><i>No recieved requests!</i></h6>
+            {% else %} {% for r_request in rec_friend_requests %}
+            <a href="#"
+              ><img
+                src="{{ r_request.from_user.profile.userpic.url }}"
+                class="rounded mr-2"
+                width="40"
+                height="40"
+                alt=""
+            /></a>
+            <a
+              class="mr-2 align-middle"
+              href="{% url 'profile2' r_request.from_user.profile.slug %}"
+              ><b>{{ r_request.from_user.username }}</b>
+            </a>
+            <small class="float-right">
+              <a
+                class="btn btn-success mr-2"
+                href="{% url 'accept_friend_request' r_request.from_user.id %}"
+                >Accept</a
+              >
+              <a
+                class="btn btn-danger"
+                href="{% url 'delete_friend_request' r_request.from_user.id %}"
+                >Reject</a
+              >
+            </small>
+            <br /><br />
+            {% endfor %} {% endif %}
+          </div>
+
+
+
+            </div>
+
+        </form>
+    </div>
+{% endblock content %}

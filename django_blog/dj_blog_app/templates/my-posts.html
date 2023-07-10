@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} My personal blog {% endblock %}
+
+
+{% block content %}
+    <div class="row display-flex justify-content-start">
+    {% for i in object_list %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mobiledevice">
+            <article class="media content-section customhover" style="height: 95%;">
+                <div class="media-body">
+                        <div class="aspect-ratio-box">
+                            <img class="img-fluid" src="{{ i.image.url }}">
+                        </div>
+                    <div>
+                        <a class="article-title line-clamp-2 title-style" style="font-size: 22px" href="{{i.slug}}">
+                            {{ i.title }}
+                        </a>
+                            <p class="article-content line-clamp-5 subtitle-style">{{ i.content|linebreaks|truncatewords:50 }}</p>
+                        </a>
+                    </div>
+                    {% if i.author == user %}
+                        <div style="float: right">
+                            <a class="btn btncolor btn-sm mt-1 mb-1" href="#">Update</a>
+
+                             <a class="btn btn-danger btn-sm mt-1 mb-1"
+                                href="{% url 'del-post' i.pk %}"
+                             >Delete post</a>
+
+                          </div>
+                    {% endif %}
+                </div>
+            </article>
+
+        </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
+

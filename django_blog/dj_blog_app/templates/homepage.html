@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Homepage</title>
+
+    <style>
+    body{
+      background: url(static/images/wallpaper.png);
+    }
+
+    button {
+        display: inline-block;
+        font: 150 20px Cambria;
+        text-align: center;
+        padding: 10px 20px;
+        background-color: buttonface;
+        border-width: 2px;
+        border-style: outset;
+        border-color: buttonface;
+}
+</style>
+</head>
+
+<body>
+    <h2>Welcome to the Blog App</h2>
+    <h3>In order to start using the App, please register or login.</h3>
+    <br><br>
+
+    <button type="submit"  class="btn btn-light"><a href="register">Register</a></button>
+
+    {% if user.is_authenticated %}
+    <button type="submit"  class="btn btn-light"><a href="my-posts"> Login</a></button>
+    {% else %}
+    <button type="submit"  class="btn btn-light"><a href="login"> Login</a></button>
+    {% endif %}
+</body>
+</html>
