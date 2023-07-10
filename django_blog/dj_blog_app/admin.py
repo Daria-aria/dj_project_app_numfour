@@ -19,5 +19,22 @@ class PostAdmin(admin.ModelAdmin):
 
     get_image.short_description = 'Image object'
 
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'slug', 'username', 'userpic', 'date_of_birth', 'statusType', 'bio')
+    list_display_links = ('user', 'username')
+    search_fields = ('user', 'statusType')
+
+
+    def get_image(self, object):
+        if object.userpic:
+            return mark_safe(f'<img scr="{object.userpic.url}" width=100>')
+
+    get_image.short_description = 'Userpic object'
+
 admin.site.register(Post, PostAdmin)
-admin.site.register(Profile)
+admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Friendship)
+admin.site.register(Friends1)
+
+

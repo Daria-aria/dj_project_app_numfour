@@ -5,14 +5,16 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 import os
+from django.conf import settings
+from autoslug import AutoSlugField
 
 
 
 class Post(models.Model):
     class PostType(models.TextChoices):
-        Lifestyle = 'L', 'Lifestyle'
-        Study = 'S', 'Study'
-        Advice = 'A', 'Advice'
+        Lifestyle = 'Lifestyle', 'Lifestyle'
+        Study = 'Study', 'Study'
+        Advice = 'Advice', 'Advice'
 
     def image_upload_to(self, instance=None):
         if instance:
@@ -32,6 +34,11 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def post_slug(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(Post, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
@@ -40,34 +47,60 @@ class Post(models.Model):
 
 class Profile(models.Model):
     class StatusChoice(models.TextChoices):
-        Writer= 'W', 'Writer'
-        Follower = 'F', 'Follower'
-        Critic = 'C', 'Critic'
+        Writer= 'Writer', 'Writer'
+        Follower = 'Follower', 'Follower'
+        Critic = 'Critic', 'Critic'
+
+    def image_upload_to(self, instance=None):
+        if instance:
+            return os.path.join('Profile', slugify(self.username), instance)
+        return None
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    userpic = models.ImageField(default='default.jpg', upload_to='media/images/userpic')
-    user_name = models.CharField(blank=True, max_length=100)
+    slug = AutoSlugField(populate_from='user')
+    userpic = models.ImageField(upload_to=image_upload_to, default='images/userpic/default.png')
+    username = models.CharField(blank=True, max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
     statusType = models.CharField(max_length=50, choices=StatusChoice.choices, default='n/a')
     bio = models.TextField()
-    friends = models.TextField(blank=True)
+    friends = models.ManyToManyField("Profile", blank=True)
     followers = models.TextField(blank=True)
 
+    def get_absolute_url(self):
+        return "/{}".format(self.slug)
 
-#     def __str__(self):
-#         return self.user.username
 
-# from django.contrib.auth.models import AbstractUser
-# class CustomUser(AbstractUser):
-#
-#     STATUS = (
-#         ('author', 'author'),
-#         ('subscriber', 'subscriber'),
-#         ('moderator', 'moderator'),
-#     )
-#
-#     username = models.CharField(unique=True, max_length=50)
-#     status = models.CharField(max_length=100, choices=STATUS, default=None)
-#     description = models.TextField("Description", max_length=600, default='', blank=True)
+class Friendship(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    # def __str__(self):
-    #     return self.username
+class Friends1(models.Model):
+    users1=models.ManyToManyField(User,null=True)
+    current_user=models.ForeignKey(User,related_name='owner',on_delete=models.CASCADE,null=True)
+
+    @classmethod
+    def make_friend(cls,current_user,new_friend):
+        friend,create=cls.objects.get_or_create(current_user=current_user)
+        friend.users1.add(new_friend)
+
+    @classmethod
+    def lose_friend(cls, current_user, new_friend):
+        friend, create = cls.objects.get_or_create(current_user=current_user)
+        friend.users1.remove(new_friend)
+
+# class Subscribe(models.Model):
+#     from_user = models.ForeignKey('auth.User')
+#     to_user = models.ForeignKey('auth.User', related_name="person_subscribers")
+
+# class Friendship(models.Model):
+#     to_user = models.ForeignKey('auth.User', related_name="friends")
+#     from_user = models.ForeignKey('auth.User')
+
+# class FriendshipRequest(models.Model):
+#     to_user = models.ForeignKey('auth.User',
+#                                 related_name="friendship_requests_to")
+#     from_user = models.ForeignKey('auth.User',
+#                                   related_name="friendship_requests_from")
+#     status = models.CharField(max_length=25, choices=REQUEST_STATUS,
+#                               default=CREATED)

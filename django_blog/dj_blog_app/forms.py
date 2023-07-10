@@ -5,7 +5,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
-from django.forms import SelectDateWidget, NumberInput
+from django.forms import NumberInput
 from django.forms.fields import EmailField
 from django.forms.forms import Form
 from .models import *
@@ -74,27 +74,21 @@ class UserUpdForm(forms.ModelForm):
         model = get_user_model()
         fields = ['first_name', 'last_name', 'email']
 
+
 class ProfileUpdForm(forms.ModelForm):
-    CHOICES=[('writer', 'Writer'), ('follower', 'Follower'), ('critic', 'Critic'),]
+    CHOICES = [('writer', 'Writer'), ('follower', 'Follower'), ('critic', 'Critic'), ]
     userpic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
     bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
                           empty_value='the user prefers not to share his/her bio information.')
-    user_name = forms.CharField()
+    username = get_user_model()
     date_of_birth = forms.DateField(widget=NumberInput(attrs={'type': 'date'}))
     statusType = forms.ChoiceField(choices=CHOICES)
-    friends = forms.CharField()
-    followers = forms.CharField()
+    # friends = forms.CharField()
+    # followers = forms.CharField()
 
     class Meta:
         model = Profile
-        fields = ['userpic', 'user_name', 'date_of_birth', 'statusType', 'bio', 'friends', 'followers']
-
-#
-#     first_name= forms.CharField(max_length=50,required=True,
-#                                widget=forms.TextInput(attrs={'class': 'form-control'}))
-#     last_name = forms.CharField(max_length=50, required=True,
-#                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
-
+        fields = ['userpic', 'username', 'date_of_birth', 'statusType', 'bio', 'friends', 'followers']
 
 
 # class ContactForm(forms.Form):
@@ -112,6 +106,7 @@ class PostCreateForm(forms.ModelForm):
         fields = [
             'title', 'type', 'content', 'image', 'release_date',
         ]
+
 
 class PostUpdForm(forms.ModelForm):
     class Meta:

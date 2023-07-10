@@ -24,18 +24,18 @@
                 <!-- Right Side -->
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                    <a class="nav-item nav-link" href="{% url 'my-posts' %}">
-                        All posts<i class="fa-regular fa-images" style="color: #d6e137;"></i>
-                    </a>
-                    <a class="nav-item nav-link" href="{% url 'new-post' %}">
-                        New post<i class="fas fa-image" style="color: #d6e137;"></i>
-                    </a>
-                    <a class="nav-item nav-link" href="{% url 'logout' %}">
-                        Log out <i class="fa-regular fa-hand-peace"></i>
-                    </a>
-                    <a class="nav-item nav-link" href="{% url 'profile' user.username %}">
-                        My profile: {{user.username}} <i class="fa-solid fa-face-grin-wide" style="color: #ff4763;"></i>
-                    </a>
+                        <a class="nav-item nav-link" href="{% url 'my-posts' %}">
+                            All posts<i class="fa-regular fa-images" style="color: #d6e137;"></i>
+                        </a>
+                        <a class="nav-item nav-link" href="{% url 'new-post' %}">
+                            New post<i class="fas fa-image" style="color: #d6e137;"></i>
+                        </a>
+                        <a class="nav-item nav-link" href="{% url 'logout' %}">
+                            Log out <i class="fa-regular fa-hand-peace"></i>
+                        </a>
+                        <a class="nav-item nav-link" href="{% url 'profile' %}">
+                            My profile: {{user.username}} <i class="fa-solid fa-face-grin-wide" style="color: #ff4763;"></i>
+                        </a>
                     {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">
                         Log in <i class="fas fa-sign-in-alt"></i>
